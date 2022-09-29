@@ -13,6 +13,51 @@ package API{
         +Event PortClosed
     }
 
+    class KvaserControl<< (S, #AAAA00) Singleton>>{
+
+    }
+
+    entity Frame{
+
+    }
+
+    Interface IReceiver{
+
+    }
+
+    Interface ICommand{
+
+    }
+
+    Enum CommandState{
+
+    }
+
+    Interface ISender{
+
+    }
+
+    KPortControlUI "1" -l "1" KvaserControl
+
+    KvaserControl "1" -l "1..*" Frame
+    KvaserControl "1" -u-o "1..*" IReceiver
+    KvaserControl "1" -u-o "1..*" ISender
+    KvaserControl "1" -u- "0..*" ICommand
+
+    ICommand - CommandState
+    ICommand *-l Frame
+}
+
+package InternalModules{
+    class PortCtrl<< (M, #FF7700) Module>>{
+        ~{field} List<PortParameter> Ports
+        ~void ScanPorts()
+        ~List<PortParameter> GetPhysicalPorts()
+        ~List<PortParameter> GetVirtualPorts()
+        ~bool Open(int No)
+        ~bool Close()
+    }
+
     entity BusConfig{
         +int Bitrate
         +int tseg1
@@ -25,22 +70,36 @@ package API{
         +String Name
         +int SerialNo
     }
+
+    class RecvMonitor<< (M, #FF7700) Module>>{
+
+    }
+
+    class ReceiverManager<< (M, #FF7700) Module>>{
+
+    }
+
+    class MessageSender<< (M, #FF7700) Module>>{
+
+    }
+
+    RecvMonitor -l> ReceiverManager
+    MessageSender -> ReceiverManager
 }
 
-package InternalModules{
-    class PortCtrl<< (M, #FF7700) Module>>{
-        ~{field} List<PortParameter> Ports
-        ~void ScanPorts()
-        ~List<PortParameter> GetPhysicalPorts()
-        ~List<PortParameter> GetVirtualPorts()
-        ~bool Open(int No)
-        ~bool Close()
-    }
-}
 
 KPortControlUI ---> PortCtrl
 KPortControlUI --> PortParameter
 KPortControlUI --> BusConfig
+
+KvaserControl ---> PortCtrl
+KvaserControl *---> RecvMonitor
+KvaserControl *---> ReceiverManager
+KvaserControl *---> MessageSender
+
+IReceiver <-- ReceiverManager
+IReceiver <-- RecvMonitor
+
 
 
 @enduml
