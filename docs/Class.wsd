@@ -14,7 +14,13 @@ package API{
     }
 
     class KvaserControl<< (S, #AAAA00) Singleton>>{
-
+        -int HandolNo
+        +bool IsOpened
+        +bool IsMonitoring
+        +bool OpenPort()
+        +bool ClosePort()
+        +bool StartRecv(IReceiver)
+        +bool StopRecv(IReceiver)
     }
 
     entity Frame{
@@ -22,7 +28,13 @@ package API{
     }
 
     Interface IReceiver{
-
+        bool IsReceiving
+        Dictionary<T, String> Buff
+        Queue<T> RecvData
+        Event OwnDataReceived
+        bool StartRecv(IReceiver)
+        bool StopRecv(IReceiver)
+        bool ReceiveProccess(Frame)
     }
 
     Interface ICommand{
@@ -72,11 +84,23 @@ package InternalModules{
     }
 
     class RecvMonitor<< (M, #FF7700) Module>>{
-
+        -Thread MonitoringThread
+        ~int HandolNo
+        -Queue Buff
+        ~bool IsMonitoring
+        -void MonitoringLoop()
+        ~bool StartMonitoring()
+        ~bool StopMonitoring()
+        -bool ReadBus()
+        -void ExcuteReceiveProcess(Frame)
+        ~void ClearBuff()
     }
 
     class ReceiverManager<< (M, #FF7700) Module>>{
-
+        -HashSet<IReceiver> Receivers
+        ~bool StartRecv(IReceiver)
+        ~bool StopRecv(IReceiver)
+        -void ClearReceivers()
     }
 
     class MessageSender<< (M, #FF7700) Module>>{
