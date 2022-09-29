@@ -1,0 +1,46 @@
+@startuml
+
+title "KVaser CANLib Wrapper Library's Class diagram"
+
+package API{
+
+    class KPortControlUI<<boundary>>{
+        ~Button OpenBtn
+        ~Button CloseBtn
+        ~ComboBox ChannelCombo
+        +BusConfig Parameters
+        +Event PortOpened
+        +Event PortClosed
+    }
+
+    entity BusConfig{
+        +int Bitrate
+        +int tseg1
+        +int tseg2
+        +int sjw
+    }
+
+    entity PortParameter{
+        +int No
+        +String Name
+        +int SerialNo
+    }
+}
+
+package InternalModules{
+    class PortCtrl<< (M, #FF7700) Module>>{
+        ~{field} List<PortParameter> Ports
+        ~void ScanPorts()
+        ~List<PortParameter> GetPhysicalPorts()
+        ~List<PortParameter> GetVirtualPorts()
+        ~bool Open(int No)
+        ~bool Close()
+    }
+}
+
+KPortControlUI ---> PortCtrl
+KPortControlUI --> PortParameter
+KPortControlUI --> BusConfig
+
+
+@enduml
