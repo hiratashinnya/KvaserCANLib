@@ -21,10 +21,21 @@ package API{
         +bool ClosePort()
         +bool StartRecv(IReceiver)
         +bool StopRecv(IReceiver)
+        +bool SendMessage(Frame)
+        +bool SendAndWait(ICommand)
     }
 
     entity Frame{
-
+        +int CANID
+        +int IDE
+        +int RTR
+        +int DLC
+        +Byte[] Data
+        +long Timestamp
+        +bool IsError
+        +void Init(int iniVal)
+        +Frame Clone()
+        +String ToCSV()
     }
 
     Interface IReceiver{
@@ -38,22 +49,27 @@ package API{
     }
 
     Interface ICommand{
-
+        +Frame SendMess
+        +Frame RecvMess
+        +CommandState State
+        +bool Parse(Frame)
+        +bool IsSuccessedSend()
+        +bool IsTimeout()
     }
 
     Enum CommandState{
-
-    }
-
-    Interface ISender{
-
+        NotSend = 0
+        Waiting
+        RecvACK
+        RecvNACK
+        Canceled
+        Timeout
     }
 
     KPortControlUI "1" -l "1" KvaserControl
 
     KvaserControl "1" -l "1..*" Frame
     KvaserControl "1" -u-o "1..*" IReceiver
-    KvaserControl "1" -u-o "1..*" ISender
     KvaserControl "1" -u- "0..*" ICommand
 
     ICommand - CommandState
@@ -104,7 +120,10 @@ package InternalModules{
     }
 
     class MessageSender<< (M, #FF7700) Module>>{
-
+        ~int HandolNo
+        ~bool CheckFormat(Frame)
+        ~bool SendMessage(Frame)
+        ~bool SendAndWait(ICommand)
     }
 
     RecvMonitor -l> ReceiverManager
