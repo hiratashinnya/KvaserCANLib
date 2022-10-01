@@ -1,24 +1,25 @@
 @startuml
 
-title "KVaser CANLib Wrapper Library's Class diagram"
+title "Kvaser CANLib Wrapper Library's Class diagram"
 
 package API{
 
     class KPortControlUI<<boundary>>{
-        ~Button OpenBtn
-        ~Button CloseBtn
-        ~ComboBox ChannelCombo
-        +BusConfig Parameters
+        +Button OpenBtn
+        +Button CloseBtn
+        +ComboBox ChannelCombo
+        -void RegisterPorts()
+        -int SelectBitrate()
         +Event PortOpened
         +Event PortClosed
     }
 
     class KvaserControl<< (S, #AAAA00) Singleton>>{
-        -int HandolNo
+        -int HandleNo
         +bool IsOpened
         +bool IsMonitoring
-        +bool OpenPort()
-        +bool ClosePort()
+        +bool BusOn()
+        +bool BusOff()
         +bool StartRecv(IReceiver)
         +bool StopRecv(IReceiver)
         +bool SendMessage(Frame)
@@ -66,7 +67,7 @@ package API{
         Timeout
     }
 
-    KPortControlUI "1" -l "1" KvaserControl
+    KPortControlUI "1" -l-o "1" KvaserControl
 
     KvaserControl "1" -l "1..*" Frame
     KvaserControl "1" -u-o "1..*" IReceiver
@@ -77,31 +78,29 @@ package API{
 }
 
 package InternalModules{
-    class PortCtrl<< (M, #FF7700) Module>>{
-        ~{field} List<PortParameter> Ports
+    class PortController<< (M, #FF7700) Module>>{
+        -{field} Dictinary<int, PortParameter> Ports
+        ~int HandleNo
+        ~bool HasPorts()
         ~void ScanPorts()
+        ~String[] GetPortsInfo()
         ~List<PortParameter> GetPhysicalPorts()
         ~List<PortParameter> GetVirtualPorts()
-        ~bool Open(int No)
-        ~bool Close()
-    }
-
-    entity BusConfig{
-        +int Bitrate
-        +int tseg1
-        +int tseg2
-        +int sjw
+        -bool SetBusParam(int bitrate)
+        ~bool BusOn(int handleNo)
+        ~bool BusOff()
     }
 
     entity PortParameter{
         +int No
         +String Name
         +int SerialNo
+        +bool IsVirtual
     }
 
     class RecvMonitor<< (M, #FF7700) Module>>{
         -Thread MonitoringThread
-        ~int HandolNo
+        ~int HandleNo
         -Queue Buff
         ~bool IsMonitoring
         -void MonitoringLoop()
@@ -120,7 +119,7 @@ package InternalModules{
     }
 
     class MessageSender<< (M, #FF7700) Module>>{
-        ~int HandolNo
+        ~int HandleNo
         ~bool CheckFormat(Frame)
         ~bool SendMessage(Frame)
         ~bool SendAndWait(ICommand)
@@ -128,14 +127,14 @@ package InternalModules{
 
     RecvMonitor -l> ReceiverManager
     MessageSender -> ReceiverManager
+    
+    PortController *-- PortParameter
 }
 
 
-KPortControlUI ---> PortCtrl
-KPortControlUI --> PortParameter
-KPortControlUI --> BusConfig
+KPortControlUI ---> PortController
 
-KvaserControl ---> PortCtrl
+KvaserControl ---> PortController
 KvaserControl *---> RecvMonitor
 KvaserControl *---> ReceiverManager
 KvaserControl *---> MessageSender
