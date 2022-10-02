@@ -18,8 +18,7 @@ package API{
         -int HandleNo
         +bool IsOpened
         +bool IsMonitoring
-        +bool BusOn()
-        +bool BusOff()
+        
         +bool StartRecv(IReceiver)
         +bool StopRecv(IReceiver)
         +bool SendMessage(Frame)
@@ -78,6 +77,27 @@ package API{
 }
 
 package InternalModules{
+    class BitRateConfigs<< (M, #FF7700) Module>>{
+        ~BitRateConfig[] GetConfigs()
+        ~Bitrates GetBitrate(int idx)
+        ~String[] GetConfigStr()
+    }
+
+    entity BitrateConfig<<Entity>>{
+        +String Description
+        +Bitrates Bitrate
+    }
+
+    enum Bitrates{
+        10Kbit/sec
+        50Kbit/sec
+        100Kbit/sec
+        125Kbit/sec
+        250Kbit/sec
+        500Kbit/sec
+        1Mbit/sec
+    }
+
     class PortController<< (M, #FF7700) Module>>{
         -{field} Dictinary<int, PortParameter> Ports
         ~int HandleNo
@@ -86,9 +106,10 @@ package InternalModules{
         ~String[] GetPortsInfo()
         ~List<PortParameter> GetPhysicalPorts()
         ~List<PortParameter> GetVirtualPorts()
-        -bool SetBusParam(int bitrate)
-        ~bool BusOn(int handleNo)
+        ~bool BusOnProcess(int handle, int bitrate)
         ~bool BusOff()
+        -bool SetBusParam(int handle, int bitrate)
+        -bool BusOn(int handleNo)
     }
 
     entity PortParameter{
@@ -129,10 +150,15 @@ package InternalModules{
     MessageSender -> ReceiverManager
     
     PortController *-- PortParameter
+    PortController --> BitRateConfigs
+
+    BitRateConfigs *-- BitrateConfig
+    BitrateConfig - Bitrates
 }
 
 
 KPortControlUI ---> PortController
+KPortControlUI ----> BitRateConfigs
 
 KvaserControl ---> PortController
 KvaserControl *---> RecvMonitor

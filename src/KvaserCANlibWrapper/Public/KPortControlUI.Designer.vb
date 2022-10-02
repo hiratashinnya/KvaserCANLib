@@ -37,7 +37,7 @@ Partial Class KPortControlUI
         Me.OpenBtn.Name = "OpenBtn"
         Me.OpenBtn.Size = New System.Drawing.Size(75, 23)
         Me.OpenBtn.TabIndex = 0
-        Me.OpenBtn.Text = "BusOn"
+        Me.OpenBtn.Text = "BusOnProcess"
         Me.OpenBtn.UseVisualStyleBackColor = True
         '
         'CloseBtn
@@ -52,7 +52,7 @@ Partial Class KPortControlUI
         'BitrateCmbBox
         '
         Me.BitrateCmbBox.FormattingEnabled = True
-        Me.BitrateCmbBox.Items.AddRange(BitRateConfigs)
+        Me.BitrateCmbBox.Items.AddRange(BitRateConfigs.GetConfigStr())
         Me.BitrateCmbBox.Location = New System.Drawing.Point(3, 3)
         Me.BitrateCmbBox.Name = "BitrateCmbBox"
         Me.BitrateCmbBox.Size = New System.Drawing.Size(156, 23)

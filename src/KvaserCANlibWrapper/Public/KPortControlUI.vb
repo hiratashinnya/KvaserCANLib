@@ -10,7 +10,7 @@ Public Class KPortControlUI
         InitializeComponent()
 
         ' InitializeComponent() 呼び出しの後で初期化を追加します。
-
+        KvaserControl.SetKPortCtrlUI(Me)
         RegisterPorts()
 
     End Sub
@@ -27,25 +27,8 @@ Public Class KPortControlUI
         End If
     End Sub
 
-    Private Function SelectBitrate() As Integer
-        Select Case BitrateCmbBox.SelectedIndex
-            Case 0
-                Return canBITRATE_10K
-            Case 1
-                Return canBITRATE_50K
-            Case 2
-                Return canBITRATE_100K
-            Case 3
-                Return canBITRATE_125K
-            Case 4
-                Return canBITRATE_250K
-            Case 5
-                Return canBITRATE_500K
-            Case 6
-                Return canBITRATE_1M
-            Case Else
-                Throw New Exception("Undefined Bitrate is selected.")
-        End Select
+    Private Function SelectBitrate() As Bitrates
+        Return BitRateConfigs.GetBitrate(BitrateCmbBox.SelectedIndex)
     End Function
 
     Private Sub OpenBtn_Click(sender As Object, e As EventArgs) Handles OpenBtn.Click
@@ -63,7 +46,7 @@ Public Class KPortControlUI
             Exit Sub
         End If
 
-        If Not PortController.BusOn(SelectBitrate(), ChannelCmbBox.SelectedIndex) Then
+        If Not PortController.BusOnProcess(ChannelCmbBox.SelectedIndex, SelectBitrate()) Then
             OpenBtn.Enabled = True
             ChannelCmbBox.Enabled = True
             BitrateCmbBox.Enabled = True

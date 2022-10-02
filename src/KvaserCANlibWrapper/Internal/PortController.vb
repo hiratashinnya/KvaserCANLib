@@ -1,18 +1,7 @@
 ﻿Imports Kvaser.CanLib
 Module PortController
     Private Ports As Dictionary(Of Integer, PortParameter)
-    Friend HandleNo As Integer
-
-    Friend Property BitRateConfigs As String() =
-    {
-        "10Kbit/sec ",
-        "50Kbit/sec ",
-        "100Kbit/sec",
-        "125Kbit/sec",
-        "250Kbit/sec",
-        "500Kbit/sec",
-        "1Mbit/sec"
-    }
+    Friend HandleNo As Integer = Canlib.canINVALID_HANDLE
 
     Sub New()
         Ports = New Dictionary(Of Integer, PortParameter)
@@ -21,6 +10,7 @@ Module PortController
     Friend Function HasPorts() As Boolean
         Return Ports.Count > 0
     End Function
+
     Friend Sub ScanPort()
         Dim num As Integer
         If Canlib.canGetNumberOfChannels(num) <> Canlib.canStatus.canOK Then
@@ -57,8 +47,21 @@ Module PortController
         Return Ports.Values.Where(Function(x As PortParameter) x.IsVirtual).ToList
     End Function
 
-    Private Function SetBusParam(ByVal busbitrate As Integer) As Boolean
-        Dim stat = Canlib.canSetBusParams(HandleNo, busbitrate, 0, 0, 0, 1)
+    Friend Function BusOnProcess(ByVal handle As Integer, ByVal bitrate As Bitrates) As Boolean
+        If Not Ports.ContainsKey(handle) Then
+            MsgBox($"port {handle} is not found.", Title:="Port BusOnProcess Error!")
+            Return False
+        End If
+
+        If Not SetBusParam(handle, bitrate) Then
+            Return False
+        End If
+
+        Return BusOn(handle)
+    End Function
+
+    Private Function SetBusParam(ByVal handle As Integer, ByVal busbitrate As Integer) As Boolean
+        Dim stat = Canlib.canSetBusParams(handle, busbitrate, 0, 0, 0, 1)
         If stat = Canlib.canStatus.canOK Then
             Return True
         Else
@@ -68,17 +71,9 @@ Module PortController
             Return False
         End If
     End Function
-    Friend Function BusOn(ByVal bitrate As Integer, ByVal handleNo As Integer) As Boolean
-        If Not Ports.ContainsKey(handleNo) Then
-            MsgBox($"port {handleNo} is not found.", Title:="Port BusOn Error!")
-            Return False
-        End If
 
-        If Not SetBusParam(bitrate) Then
-            Return False
-        End If
-
-        Dim stat = Canlib.canBusOn(handleNo)
+    Private Function BusOn(handle As Integer) As Boolean
+        Dim stat = Canlib.canBusOn(handle)
         If stat <> Canlib.canStatus.canOK Then
             Dim buffStr As String = ""
             Canlib.canGetErrorText(stat, buffStr)
@@ -86,7 +81,7 @@ Module PortController
             Return False
 
         Else ' canOK = Canlib.canBusOn(handleNo)
-            PortController.HandleNo = handleNo
+            HandleNo = handle
             Return True
         End If
     End Function
@@ -94,6 +89,7 @@ Module PortController
     Friend Function BusOff() As Boolean
         Dim stat = Canlib.canBusOff(HandleNo)
         If stat = Canlib.canStatus.canOK Then
+            HandleNo = Canlib.canINVALID_HANDLE
             Return True
         Else
             Dim buffStr As String = ""
