@@ -22,5 +22,21 @@ KvaserCANlibWrapper
   resource lookups using this strongly typed resource class.
 </summary>
 </member>
+<member name="T:KvaserCANlibWrapper.Frame.MsgFlags">
+ <summary>
+ Cannot use both flags Standard And Extend
+ </summary>
+</member>
+<member name="F:KvaserCANlibWrapper.Frame.MsgFlags.WakeUp">
+ <summary>
+ SWC Hardware
+ </summary>
+</member>
+<member name="M:KvaserCANlibWrapper.Frame.ToCSV">
+ <summary>
+ CANID, DLC, IsRemote, IsExtend, Data0, .. , Data7, Timestamp_ms
+ </summary>
+ <returns></returns>
+</member>
 </members>
 </doc>

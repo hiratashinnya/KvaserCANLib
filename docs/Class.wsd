@@ -27,15 +27,25 @@ package API{
 
     entity Frame<<Entity>>{
         +int CANID
-        +int IDE
-        +int RTR
+        ~int Flags
         +int DLC
         +Byte[] Data
         +long Timestamp
         +bool IsError
-        +void Init(int iniVal)
+        +bool IsRemote()
+        +bool IsExtend()
+        +void New()
+        +void New(int iniVal)
+        +void New(Frame source)
         +Frame Clone()
         +String ToCSV()
+    }
+
+    enum MsgFlags<<Flags>>{
+        Remote
+        Standard
+        Extend
+        WakeUp
     }
 
     Interface IReceiver<<Service>>{
@@ -68,12 +78,14 @@ package API{
 
     KPortControlUI "1" -l-o "1" KvaserControl
 
+    KvaserControl "1" -u- "0..*" ICommand
     KvaserControl "1" -l "1..*" Frame
     KvaserControl "1" -u-o "1..*" IReceiver
-    KvaserControl "1" -u- "0..*" ICommand
 
     ICommand - CommandState
-    ICommand *-l Frame
+    Frame -* ICommand 
+    MsgFlags -u- Frame
+    MsgFlags -[hidden] KPortControlUI
 }
 
 package InternalModules{

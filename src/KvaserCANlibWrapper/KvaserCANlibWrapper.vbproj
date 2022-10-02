@@ -104,6 +104,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
     </Compile>
+    <Compile Include="Public\Frame.vb" />
     <Compile Include="Public\KPortControlUI.vb">
       <SubType>UserControl</SubType>
     </Compile>
