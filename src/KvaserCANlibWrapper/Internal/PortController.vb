@@ -47,9 +47,18 @@ Module PortController
         Return Ports.Values.Where(Function(x As PortParameter) x.IsVirtual).ToList
     End Function
 
-    Friend Function BusOnProcess(ByVal handle As Integer, ByVal bitrate As Bitrates) As Boolean
-        If Not Ports.ContainsKey(handle) Then
-            MsgBox($"port {handle} is not found.", Title:="Port BusOnProcess Error!")
+    Friend Function BusOnProcess(ByVal channel As Integer, ByVal bitrate As Bitrates) As Boolean
+        If Not Ports.ContainsKey(channel) Then
+            MsgBox($"port {channel} is not found.", Title:="Port BusOnProcess Error!")
+            Return False
+        End If
+
+        Dim handle = Canlib.canOpenChannel(channel, Canlib.canOPEN_ACCEPT_VIRTUAL)
+        If handle < 0 Then
+            Dim errText As String = ""
+            Dim errCode = CType(handle, Canlib.canStatus)
+            Canlib.canGetErrorText(errCode, errText)
+            MsgBox(errText)
             Return False
         End If
 
@@ -74,15 +83,14 @@ Module PortController
 
     Private Function BusOn(handle As Integer) As Boolean
         Dim stat = Canlib.canBusOn(handle)
-        If stat <> Canlib.canStatus.canOK Then
+        If stat = Canlib.canStatus.canOK Then
+            HandleNo = handle
+            Return True
+        Else
             Dim buffStr As String = ""
             Canlib.canGetErrorText(stat, buffStr)
             MsgBox(buffStr)
             Return False
-
-        Else ' canOK = Canlib.canBusOn(handleNo)
-            HandleNo = handle
-            Return True
         End If
     End Function
 
