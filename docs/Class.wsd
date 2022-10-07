@@ -19,8 +19,6 @@ package API{
         +bool IsOpened
         +bool IsMonitoring
         
-        +bool StartRecv(IReceiver)
-        +bool StopRecv(IReceiver)
         +bool SendMessage(Frame)
         +bool SendAndWait(ICommand)
     }
@@ -48,15 +46,20 @@ package API{
         WakeUp
     }
 
-    Interface IReceiver<<Service>>{
-        bool IsReceiving
-        Dictionary<T, String> Buff
-        Queue<T> RecvData
-        Event OwnDataReceived
-        bool StartRecv(IReceiver)
-        bool StopRecv(IReceiver)
-        bool ReceiveProccess(Frame)
+    abstract AbstractReceiver<<Service>>{
+        +bool IsReceiving
+        #{field}String RecvData(T key)
+        -Dictionary<T, String> Buff
+        -Queue<T> RecvDataID_q
+        #T RecvDataID
+        +Event OwnDataReceived
+        +bool StartRecv()
+        +bool StopRecv()
+        #<<internal>>void ReceiveProccess(Frame)
+        #{abstract}bool Parse(Frame)
+        +void ClearBuff()
     }
+
 
     Interface ICommand<<Entity>>{
         +Frame SendMess
@@ -80,12 +83,10 @@ package API{
 
     KvaserControl "1" -u- "0..*" ICommand
     KvaserControl "1" -l "1..*" Frame
-    KvaserControl "1" -u-o "1..*" IReceiver
 
-    ICommand - CommandState
+    CommandState - ICommand
     Frame -* ICommand 
-    MsgFlags -u- Frame
-    MsgFlags -[hidden] KPortControlUI
+    Frame - MsgFlags 
 }
 
 package InternalModules{
@@ -118,7 +119,7 @@ package InternalModules{
         ~String[] GetPortsInfo()
         ~List<PortParameter> GetPhysicalPorts()
         ~List<PortParameter> GetVirtualPorts()
-        ~bool BusOnProcess(int handle, int bitrate)
+        ~bool BusOnProcess(int channel, int bitrate)
         ~bool BusOff()
         -bool SetBusParam(int handle, int bitrate)
         -bool BusOn(int handleNo)
@@ -149,6 +150,11 @@ package InternalModules{
         ~bool StartRecv(IReceiver)
         ~bool StopRecv(IReceiver)
         -void ClearReceivers()
+        ~void CallReceiveProccess(Frame)
+    }
+
+        Interface IReceiver<<Service>>{
+        void ReceiveProccess(Frame)
     }
 
     class MessageSender<< (M, #FF7700) Module>>{
@@ -158,14 +164,15 @@ package InternalModules{
         ~bool SendAndWait(ICommand)
     }
 
-    RecvMonitor -l> ReceiverManager
-    MessageSender -> ReceiverManager
+    RecvMonitor --> ReceiverManager
+    MessageSender --> ReceiverManager
     
     PortController *-- PortParameter
     PortController --> BitRateConfigs
 
     BitRateConfigs *-- BitrateConfig
     BitrateConfig - Bitrates
+
 }
 
 
@@ -174,12 +181,11 @@ KPortControlUI ----> BitRateConfigs
 
 KvaserControl ---> PortController
 KvaserControl *---> RecvMonitor
-KvaserControl *---> ReceiverManager
 KvaserControl *---> MessageSender
 
-IReceiver <-- ReceiverManager
-IReceiver <-- RecvMonitor
+AbstractReceiver --|> IReceiver
+IReceiver <--o ReceiverManager
 
-
+AbstractReceiver ---> ReceiverManager
 
 @enduml

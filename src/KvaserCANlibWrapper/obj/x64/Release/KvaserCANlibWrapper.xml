@@ -22,6 +22,60 @@ KvaserCANlibWrapper
   resource lookups using this strongly typed resource class.
 </summary>
 </member>
+<member name="M:KvaserCANlibWrapper.ReceiverManager.StartRecv(KvaserCANlibWrapper.IReceiver)">
+ <summary>
+ 受信解析処理中又は既に登録済みの場合、False
+ </summary>
+ <param name="receiver"></param>
+ <returns></returns>
+</member>
+<member name="M:KvaserCANlibWrapper.ReceiverManager.StopRecv(KvaserCANlibWrapper.IReceiver)">
+ <summary>
+ 受信解析処理中又は未登録の場合、False
+ </summary>
+ <param name="receiver"></param>
+ <returns></returns>
+</member>
+<member name="M:KvaserCANlibWrapper.ReceiverManager.CallReceiveProccess(KvaserCANlibWrapper.Frame)">
+ <summary>
+ Receiversを更新し、StartRecv済みのIReceiverにデータフレームを受信解析させる
+ </summary>
+ <param name="recvMess"></param>
+</member>
+<member name="M:KvaserCANlibWrapper.AbstractReceiver`1.ReceiveProccess(KvaserCANlibWrapper.Frame)">
+ <summary>
+ Parseメソッドを呼ぶ。
+ 対象データの場合、OwnDataReceivedイベントを発生させる
+ </summary>
+ <param name="recvMess"></param>
+</member>
+<member name="M:KvaserCANlibWrapper.AbstractReceiver`1.Parse(KvaserCANlibWrapper.Frame)">
+ <summary>
+ 受信解析処理. buffの更新、受信データ識別子のエンキューはこのメソッド内で行うこと。
+ recvMessが受信対象データの場合、Trueを返す。
+ </summary>
+ <param name="recvMess"></param>
+</member>
+<member name="P:KvaserCANlibWrapper.AbstractReceiver`1.IsReceiving">
+ <summary>
+ ReceiveProcess有効化中
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:KvaserCANlibWrapper.AbstractReceiver`1.RecvDataID">
+ <summary>
+ 受信データ識別子のエンキュー・デキュー操作。
+ デキュー失敗時はNothingを返す。
+ </summary>
+ <returns></returns>
+</member>
+<member name="E:KvaserCANlibWrapper.AbstractReceiver`1.OwnDataReceived">
+ <summary>
+ Parseした結果、対象データだった場合、発生する
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param>
+</member>
 <member name="T:KvaserCANlibWrapper.Frame.MsgFlags">
  <summary>
  Cannot use both flags Standard And Extend
@@ -37,6 +91,11 @@ KvaserCANlibWrapper
  CANID, DLC, IsRemote, IsExtend, Data0, .. , Data7, Timestamp_ms
  </summary>
  <returns></returns>
+</member>
+<member name="T:KvaserCANlibWrapper.IReceiver">
+ <summary>
+ KvaserCANlibWrapperライブラリでCANデータを受信するためのInterface
+ </summary>
 </member>
 </members>
 </doc>

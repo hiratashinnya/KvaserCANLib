@@ -100,11 +100,14 @@
   <ItemGroup>
     <Compile Include="Internal\BitRateConfigs.vb" />
     <Compile Include="Internal\PortController.vb" />
+    <Compile Include="Internal\ReceiverManager.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
     </Compile>
+    <Compile Include="Public\AbstractReceiver.vb" />
     <Compile Include="Public\Frame.vb" />
+    <Compile Include="Internal\IReceiver.vb" />
     <Compile Include="Public\KPortControlUI.vb">
       <SubType>UserControl</SubType>
     </Compile>
