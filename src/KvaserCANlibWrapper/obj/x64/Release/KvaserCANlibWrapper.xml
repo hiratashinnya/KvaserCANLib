@@ -42,6 +42,11 @@ KvaserCANlibWrapper
  </summary>
  <param name="recvMess"></param>
 </member>
+<member name="F:KvaserCANlibWrapper.RecvMonitor.MonitoringControlFlag">
+ <summary>
+ falseにセットすることで、MonitoringLoopを停止する
+ </summary>
+</member>
 <member name="M:KvaserCANlibWrapper.AbstractReceiver`1.ReceiveProccess(KvaserCANlibWrapper.Frame)">
  <summary>
  Parseメソッドを呼ぶ。
@@ -60,6 +65,13 @@ KvaserCANlibWrapper
  <summary>
  ReceiveProcess有効化中
  </summary>
+ <returns></returns>
+</member>
+<member name="P:KvaserCANlibWrapper.AbstractReceiver`1.RecvData(`0)">
+ <summary>
+ Parse後のデータを格納するバッファ
+ </summary>
+ <param name="key"></param>
  <returns></returns>
 </member>
 <member name="P:KvaserCANlibWrapper.AbstractReceiver`1.RecvDataID">

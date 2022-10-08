@@ -11,6 +11,11 @@ Module PortController
         Return Ports.Count > 0
     End Function
 
+    Friend ReadOnly Property IsOpened() As Boolean
+        Get
+            Return HandleNo <> Canlib.canINVALID_HANDLE
+        End Get
+    End Property
     Friend Sub ScanPort()
         Dim num As Integer
         If Canlib.canGetNumberOfChannels(num) <> Canlib.canStatus.canOK Then

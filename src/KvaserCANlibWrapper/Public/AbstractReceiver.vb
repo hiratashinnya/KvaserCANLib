@@ -42,6 +42,11 @@ Public MustInherit Class AbstractReceiver(Of T As Structure)
     Public Property IsReceiving As Boolean
 
     Private Buff As Dictionary(Of T, String) = New Dictionary(Of T, String)
+    ''' <summary>
+    ''' Parse後のデータを格納するバッファ
+    ''' </summary>
+    ''' <param name="key"></param>
+    ''' <returns></returns>
     Public Property RecvData(ByVal key As T) As String
         Get
             If Buff.ContainsKey(key) Then

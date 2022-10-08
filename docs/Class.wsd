@@ -114,6 +114,7 @@ package InternalModules{
     class PortController<< (M, #FF7700) Module>>{
         -{field} Dictinary<int, PortParameter> Ports
         ~int HandleNo
+        ~bool IsOpened
         ~bool HasPorts()
         ~void ScanPorts()
         ~String[] GetPortsInfo()
@@ -134,9 +135,11 @@ package InternalModules{
 
     class RecvMonitor<< (M, #FF7700) Module>>{
         -Thread MonitoringThread
-        ~int HandleNo
-        -Queue Buff
+        -int HandleNo
+        -bool IsOpened
+        -Queue RawBuff
         ~bool IsMonitoring
+        -bool MonitoringControlFlag
         -void MonitoringLoop()
         ~bool StartMonitoring()
         ~bool StopMonitoring()
@@ -158,7 +161,8 @@ package InternalModules{
     }
 
     class MessageSender<< (M, #FF7700) Module>>{
-        ~int HandleNo
+        -int HandleNo
+        -bool IsOpened
         ~bool CheckFormat(Frame)
         ~bool SendMessage(Frame)
         ~bool SendAndWait(ICommand)

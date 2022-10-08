@@ -40,9 +40,12 @@
             RemovingReceivers.Clear()
         End If
 
-        For Each receiver As IReceiver In Receivers
-            receiver.ReceiveProccess(recvMess)
-        Next
+        Dim options = New ParallelOptions
+        options.MaxDegreeOfParallelism = Math.Min(Receivers.Count, 4)
+        Parallel.ForEach(Receivers, options,
+            Sub(receiver As IReceiver) receiver.ReceiveProccess(recvMess)
+        )
+
     End Sub
 
 End Module
