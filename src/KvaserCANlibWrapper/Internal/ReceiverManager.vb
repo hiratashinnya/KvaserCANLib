@@ -1,12 +1,11 @@
 ﻿Module ReceiverManager
-
+    Private ReceiverLock As Object = New Object
     Private Property Receivers As HashSet(Of IReceiver) = New HashSet(Of IReceiver)
-    Private Property AddingReceivers As HashSet(Of IReceiver) = New HashSet(Of IReceiver)
-    Private Property RemovingReceivers As HashSet(Of IReceiver) = New HashSet(Of IReceiver)
 
+
+    Private CommandLock As Object = New Object
     Private Property Commands As HashSet(Of ICommand) = New HashSet(Of ICommand)
-    Private Property AddingCommands As HashSet(Of ICommand) = New HashSet(Of ICommand)
-    Private Property RemovingCommands As HashSet(Of ICommand) = New HashSet(Of ICommand)
+
 
 
     ''' <summary>
@@ -15,7 +14,9 @@
     ''' <param name="receiver"></param>
     ''' <returns></returns>
     Friend Function StartRecv(receiver As IReceiver) As Boolean
-        Return AddingReceivers.Add(receiver)
+        SyncLock ReceiverLock
+            Return Receivers.Add(receiver)
+        End SyncLock
     End Function
 
 
@@ -25,11 +26,15 @@
     ''' <param name="receiver"></param>
     ''' <returns></returns>
     Friend Function StopRecv(receiver As IReceiver) As Boolean
-        Return RemovingReceivers.Add(receiver)
+        SyncLock ReceiverLock
+            Return Receivers.Remove(receiver)
+        End SyncLock
     End Function
 
     Friend Sub ClearReceivers()
-        RemovingReceivers = New HashSet(Of IReceiver)(Receivers)
+        SyncLock ReceiverLock
+            Receivers.Clear()
+        End SyncLock
     End Sub
 
     ''' <summary>
@@ -38,7 +43,9 @@
     ''' <param name="Command"></param>
     ''' <returns></returns>
     Friend Function StartRecv(Command As ICommand) As Boolean
-        Return AddingCommands.Add(Command)
+        SyncLock CommandLock
+            Return Commands.Add(Command)
+        End SyncLock
     End Function
 
 
@@ -48,11 +55,15 @@
     ''' <param name="Command"></param>
     ''' <returns></returns>
     Friend Function StopRecv(Command As ICommand) As Boolean
-        Return RemovingCommands.Add(Command)
+        SyncLock CommandLock
+            Return Commands.Remove(Command)
+        End SyncLock
     End Function
 
     Friend Sub ClearCommands()
-        RemovingCommands = New HashSet(Of ICommand)(Commands)
+        SyncLock CommandLock
+            Commands.Clear()
+        End SyncLock
     End Sub
 
 
@@ -61,35 +72,17 @@
     ''' </summary>
     ''' <param name="recvMess"></param>
     Friend Sub CallReceiveProccess(ByVal recvMess As Frame)
-        If AddingReceivers.Count > 0 Then
-            Receivers.UnionWith(AddingReceivers)
-            AddingReceivers.Clear()
-        End If
-
-        If RemovingReceivers.Count > 0 Then
-            Receivers.ExceptWith(RemovingReceivers)
-            RemovingReceivers.Clear()
-        End If
-
-
         Dim options = New ParallelOptions
         options.MaxDegreeOfParallelism = Math.Min(Receivers.Count, 4)
-        Parallel.ForEach(Receivers, options,
+
+        SyncLock ReceiverLock
+            Parallel.ForEach(Receivers, options,
             Sub(receiver As IReceiver) receiver.ReceiveProccess(recvMess)
         )
+        End SyncLock
 
-
-        If AddingCommands.Count > 0 Then
-            Commands.UnionWith(AddingCommands)
-            AddingCommands.Clear()
-        End If
-
-        If RemovingCommands.Count > 0 Then
-            Commands.ExceptWith(RemovingCommands)
-            RemovingCommands.Clear()
-        End If
-
-        Parallel.ForEach(Commands, options,
+        SyncLock CommandLock
+            Parallel.ForEach(New HashSet(Of ICommand)(Commands), options,
             Sub(command As ICommand)
                 If command.IsTimeout() Then
                     StopRecv(command)
@@ -99,6 +92,7 @@
                 End If
             End Sub
         )
+        End SyncLock
 
     End Sub
 
