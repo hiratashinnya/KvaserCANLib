@@ -22,6 +22,14 @@ KvaserCANlibWrapper
   resource lookups using this strongly typed resource class.
 </summary>
 </member>
+<member name="M:KvaserCANlibWrapper.MessageSender.SendAndWait(KvaserCANlibWrapper.ICommand@,System.Int64)">
+ <summary>
+ コマンドを送信し、指定時間応答を待機する。ACK応答受信時Trueを返す。
+ </summary>
+ <param name="sendCommand"></param>
+ <param name="timeout_ms">コマンド送信後、応答を待機する時間(msec)</param>
+ <returns></returns>
+</member>
 <member name="M:KvaserCANlibWrapper.ReceiverManager.StartRecv(KvaserCANlibWrapper.IReceiver)">
  <summary>
  受信解析処理中又は既に登録済みの場合、False
@@ -34,6 +42,20 @@ KvaserCANlibWrapper
  受信解析処理中又は未登録の場合、False
  </summary>
  <param name="receiver"></param>
+ <returns></returns>
+</member>
+<member name="M:KvaserCANlibWrapper.ReceiverManager.StartRecv(KvaserCANlibWrapper.ICommand)">
+ <summary>
+ 受信解析処理中又は既に登録済みの場合、False
+ </summary>
+ <param name="Command"></param>
+ <returns></returns>
+</member>
+<member name="M:KvaserCANlibWrapper.ReceiverManager.StopRecv(KvaserCANlibWrapper.ICommand)">
+ <summary>
+ 受信解析処理中又は未登録の場合、False
+ </summary>
+ <param name="Command"></param>
  <returns></returns>
 </member>
 <member name="M:KvaserCANlibWrapper.ReceiverManager.CallReceiveProccess(KvaserCANlibWrapper.Frame)">
@@ -108,6 +130,19 @@ KvaserCANlibWrapper
  <summary>
  KvaserCANlibWrapperライブラリでCANデータを受信するためのInterface
  </summary>
+</member>
+<member name="T:KvaserCANlibWrapper.ICommand">
+ <summary>
+ 送信・応答がペアになっているコマンド処理を実現するインターフェース
+ </summary>
+</member>
+<member name="M:KvaserCANlibWrapper.KvaserControl.SendCommand(KvaserCANlibWrapper.ICommand@,System.Int64)">
+ <summary>
+ コマンドを送信し、指定時間応答を待機する
+ </summary>
+ <param name="command"></param>
+ <param name="timeout_ms">コマンド送信後、応答を待機する時間(msec)</param>
+ <returns></returns>
 </member>
 </members>
 </doc>

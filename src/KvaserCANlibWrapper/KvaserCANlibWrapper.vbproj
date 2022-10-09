@@ -110,6 +110,7 @@
     <Compile Include="Public\AbstractReceiver.vb" />
     <Compile Include="Public\Frame.vb" />
     <Compile Include="Internal\IReceiver.vb" />
+    <Compile Include="Public\ICommand.vb" />
     <Compile Include="Public\KPortControlUI.vb">
       <SubType>UserControl</SubType>
     </Compile>

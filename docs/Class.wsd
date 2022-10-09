@@ -66,14 +66,15 @@ package API{
     Interface ICommand<<Entity>>{
         +Frame SendMess
         +Frame RecvMess
+        +bool IsTimeout
+        +bool IsSuccessedSend
         +CommandState State
         +bool Parse(Frame)
-        +bool IsSuccessedSend()
-        +bool IsTimeout()
     }
 
     Enum CommandState<<State>>{
         NotSend = 0
+        SendFail
         Waiting
         RecvACK
         RecvNACK

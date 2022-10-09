@@ -27,7 +27,7 @@ Public Class KvaserControl
     End Property
 
 
-    Public Function SendMessage(ByRef sendMess As Frame) As Boolean
+    Public Function SendMessage(ByRef sendMess As Frame, Optional ByVal timeout_ms As Long = 100) As Boolean
         If Not IsOpened Then
             MsgBox("SendMessage is Faild. Port is not Opened.")
             Return False
@@ -36,10 +36,27 @@ Public Class KvaserControl
         Return MessageSender.SendMessage(sendMess)
     End Function
 
+    ''' <summary>
+    ''' コマンドを送信し、指定時間応答を待機する
+    ''' </summary>
+    ''' <param name="command"></param>
+    ''' <param name="timeout_ms">コマンド送信後、応答を待機する時間(msec)</param>
+    ''' <returns></returns>
+    Public Function SendCommand(ByRef command As ICommand, Optional ByVal timeout_ms As Long = 100) As Boolean
+        If Not IsOpened Then
+            MsgBox("SendMessage is Faild. Port is not Opened.")
+            Return False
+        End If
+
+        Return MessageSender.SendAndWait(command, timeout_ms)
+    End Function
+
     Public Shared Sub ShowKvCANErrText(ByVal errCode As Canlib.canStatus)
-        Dim errText = ""
-        Canlib.canGetErrorText(errCode, errText)
-        MsgBox(errText)
+        If errCode <> Canlib.canStatus.canOK Then
+            Dim errText = ""
+            Canlib.canGetErrorText(errCode, errText)
+            MsgBox(errText)
+        End If
     End Sub
 
 End Class
