@@ -69,7 +69,11 @@ Module PortController
             Return False
         End If
 
-        Return BusOn(handle)
+        If BusOn(handle) Then
+            Return RecvMonitor.StartMonitoring()
+        Else
+            Return False
+        End If
     End Function
 
     Private Function SetBusParam(ByVal handle As Integer, ByVal busbitrate As Integer) As Boolean
@@ -94,6 +98,8 @@ Module PortController
     End Function
 
     Friend Function BusOff() As Boolean
+        RecvMonitor.StopMonitoring()
+
         Dim stat = Canlib.canBusOff(HandleNo)
         If stat = Canlib.canStatus.canOK Then
             HandleNo = Canlib.canINVALID_HANDLE

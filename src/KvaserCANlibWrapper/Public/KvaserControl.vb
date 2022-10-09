@@ -26,6 +26,16 @@ Public Class KvaserControl
         End Get
     End Property
 
+
+    Public Function SendMessage(ByRef sendMess As Frame) As Boolean
+        If Not IsOpened Then
+            MsgBox("SendMessage is Faild. Port is not Opened.")
+            Return False
+        End If
+
+        Return MessageSender.SendMessage(sendMess)
+    End Function
+
     Public Shared Sub ShowKvCANErrText(ByVal errCode As Canlib.canStatus)
         Dim errText = ""
         Canlib.canGetErrorText(errCode, errText)

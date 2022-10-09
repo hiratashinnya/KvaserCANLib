@@ -21,6 +21,7 @@ package API{
         
         +bool SendMessage(Frame)
         +bool SendAndWait(ICommand)
+        +{static}void ShowKvCANErrText(CanStatus errcode)
     }
 
     entity Frame<<Entity>>{
@@ -37,6 +38,7 @@ package API{
         +void New(Frame source)
         +Frame Clone()
         +String ToCSV()
+        +bool IsInvalidFormat()
     }
 
     enum MsgFlags<<Flags>>{
@@ -163,11 +165,12 @@ package InternalModules{
     class MessageSender<< (M, #FF7700) Module>>{
         -int HandleNo
         -bool IsOpened
-        ~bool CheckFormat(Frame)
         ~bool SendMessage(Frame)
         ~bool SendAndWait(ICommand)
     }
 
+    PortController -- RecvMonitor
+    PortController -- MessageSender
     RecvMonitor --> ReceiverManager
     MessageSender --> ReceiverManager
     
@@ -183,9 +186,9 @@ package InternalModules{
 KPortControlUI ---> PortController
 KPortControlUI ----> BitRateConfigs
 
-KvaserControl ---> PortController
-KvaserControl *---> RecvMonitor
-KvaserControl *---> MessageSender
+KvaserControl *--- PortController
+KvaserControl *--- RecvMonitor
+KvaserControl *--- MessageSender
 
 AbstractReceiver --|> IReceiver
 IReceiver <--o ReceiverManager
