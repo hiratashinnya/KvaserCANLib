@@ -26,4 +26,10 @@ Public Class KvaserControl
         End Get
     End Property
 
+    Public Shared Sub ShowKvCANErrText(ByVal errCode As Canlib.canStatus)
+        Dim errText = ""
+        Canlib.canGetErrorText(errCode, errText)
+        MsgBox(errText)
+    End Sub
+
 End Class

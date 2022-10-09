@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Internal\BitRateConfigs.vb" />
+    <Compile Include="Internal\MessageSender.vb" />
     <Compile Include="Internal\PortController.vb" />
     <Compile Include="Internal\ReceiverManager.vb" />
     <Compile Include="Internal\RecvMonitor.vb" />

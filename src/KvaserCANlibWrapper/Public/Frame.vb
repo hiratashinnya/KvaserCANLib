@@ -90,4 +90,26 @@
 
         Return String.Join(",", csv)
     End Function
+
+    Public Function IsInvalidFormat() As Boolean
+        ' ---CANID---
+        If CANID <= 0 Then
+            Return False
+        ElseIf IsExtend AndAlso CANID >= (1 << 30) Then
+            Return False
+        ElseIf Not IsExtend AndAlso CANID >= (1 << 18) Then
+            Return False
+
+            ' ---DLC---
+        ElseIf DLC < 0 OrElse DLC > 8 Then
+            Return False
+        ElseIf IsRemote Xor DLC = 0 Then ' IsRemote=True <=> DLC=0
+            Return False
+        ElseIf DLC <> Data.Length Then
+            Return False
+
+        Else
+            Return True
+        End If
+    End Function
 End Class

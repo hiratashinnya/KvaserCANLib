@@ -88,9 +88,7 @@ Module RecvMonitor
         ElseIf stat = Canlib.canStatus.canERR_NOMSG Then
             Return False
         Else
-            Dim errText = ""
-            Canlib.canGetErrorText(stat, errText)
-            MsgBox(errText)
+            KvaserControl.ShowKvCANErrText(stat)
             Return False
         End If
     End Function

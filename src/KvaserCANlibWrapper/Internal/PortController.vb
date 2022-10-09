@@ -60,10 +60,8 @@ Module PortController
 
         Dim handle = Canlib.canOpenChannel(channel, Canlib.canOPEN_ACCEPT_VIRTUAL)
         If handle < 0 Then
-            Dim errText As String = ""
             Dim errCode = CType(handle, Canlib.canStatus)
-            Canlib.canGetErrorText(errCode, errText)
-            MsgBox(errText)
+            KvaserControl.ShowKvCANErrText(errCode)
             Return False
         End If
 
@@ -79,9 +77,7 @@ Module PortController
         If stat = Canlib.canStatus.canOK Then
             Return True
         Else
-            Dim buffStr As String = ""
-            Canlib.canGetErrorText(stat, buffStr)
-            MsgBox(buffStr)
+            KvaserControl.ShowKvCANErrText(stat)
             Return False
         End If
     End Function
@@ -92,9 +88,7 @@ Module PortController
             HandleNo = handle
             Return True
         Else
-            Dim buffStr As String = ""
-            Canlib.canGetErrorText(stat, buffStr)
-            MsgBox(buffStr)
+            KvaserControl.ShowKvCANErrText(stat)
             Return False
         End If
     End Function
@@ -105,9 +99,7 @@ Module PortController
             HandleNo = Canlib.canINVALID_HANDLE
             Return True
         Else
-            Dim buffStr As String = ""
-            Canlib.canGetErrorText(stat, buffStr)
-            MsgBox(buffStr)
+            KvaserControl.ShowKvCANErrText(stat)
             Return False
         End If
     End Function
