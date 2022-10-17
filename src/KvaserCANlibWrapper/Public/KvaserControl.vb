@@ -26,6 +26,18 @@ Public Class KvaserControl
         End Get
     End Property
 
+    Public Event MessageSend(ByVal sender As Object, ByVal e As EventArgs)
+
+    Public Class MessageSendEventArgs
+        Inherits EventArgs
+
+        Public SendMess As Frame
+        Public SendTime As Long
+        Public Sub New(ByVal sendMess As Frame, ByVal sendTime As Long)
+            Me.SendMess = sendMess
+            Me.SendTime = sendTime
+        End Sub
+    End Class
 
     Public Function SendMessage(ByRef sendMess As Frame, Optional ByVal timeout_ms As Long = 100) As Boolean
         If Not IsOpened Then
@@ -33,7 +45,15 @@ Public Class KvaserControl
             Return False
         End If
 
-        Return MessageSender.SendMessage(sendMess)
+        If MessageSender.SendMessage(sendMess) Then
+            Dim time = GetBusTimestamp()
+            Dim args = New MessageSendEventArgs(sendMess, time)
+
+            RaiseEvent MessageSend(Me, args)
+            Return True
+        Else
+            Return False
+        End If
     End Function
 
     ''' <summary>
@@ -49,6 +69,21 @@ Public Class KvaserControl
         End If
 
         Return MessageSender.SendAndWait(command, timeout_ms)
+    End Function
+
+    Public Function GetBusTimestamp() As Long
+        If Not IsOpened Then
+            Return -1
+        Else
+            Dim ret As Long = 0
+            Dim stat = Canlib.kvReadTimer64(HandleNo, ret)
+            If stat = Canlib.canStatus.canOK Then
+                Return ret
+            Else
+                ShowKvCANErrText(stat)
+                Return -1
+            End If
+        End If
     End Function
 
     Public Shared Sub ShowKvCANErrText(ByVal errCode As Canlib.canStatus)

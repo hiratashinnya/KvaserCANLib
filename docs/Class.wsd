@@ -18,9 +18,11 @@ package API{
         -int HandleNo
         +bool IsOpened
         +bool IsMonitoring
+        +Event MessageSend
         
         +bool SendMessage(Frame)
         +bool SendAndWait(ICommand)
+        +long GetBusTimestamp()
         +{static}void ShowKvCANErrText(CanStatus errcode)
     }
 
