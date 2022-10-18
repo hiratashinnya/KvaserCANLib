@@ -12,3 +12,4 @@ C:\Users\hiras\OneDrive\DesktopData\Study\CAN\KvaserCANLib\src\KvaserCANlibWrapp
 C:\Users\hiras\OneDrive\DesktopData\Study\CAN\KvaserCANLib\src\KvaserCANlibWrapper\obj\x64\Release\KvaserCANlibWrapper.dll
 C:\Users\hiras\OneDrive\DesktopData\Study\CAN\KvaserCANLib\src\KvaserCANlibWrapper\obj\x64\Release\KvaserCANlibWrapper.xml
 C:\Users\hiras\OneDrive\DesktopData\Study\CAN\KvaserCANLib\src\KvaserCANlibWrapper\obj\x64\Release\KvaserCANlibWrapper.pdb
+C:\Users\hiras\OneDrive\DesktopData\Study\CAN\KvaserCANLib\src\KvaserCANlibWrapper\obj\x64\Release\KvaserCANlibWrapper.SendMessageGenerator.resources

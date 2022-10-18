@@ -1,0 +1,55 @@
+@startuml
+
+title "SendMessageGenerator - Class Diagram"
+
+package UI{
+    class KPortControlUI<<(B, #00AA00) boundary>>
+    class SendMessageGenerator<<(B, #00AA00) boundary>>{
+        +Button AddMessage
+        +Button RemoveMessage 
+        +Button SaveSettings
+        +Button LoadSettings
+        +Button StartSend
+        +Button StopSend
+        -SendSettingState State
+        -Timer SendTimer
+
+        -void TransNone()
+        -void TransSetting()
+        -void TransSending()
+        -void SendMessList()
+        -void StopSendTimer()
+        -bool CheckSettings()
+    }
+
+    enum SendSettingState{
+        NoneMess
+        Setting
+        Sending
+    }
+
+    KPortControlUI -o SendMessageGenerator
+    SendMessageGenerator - SendSettingState
+}
+package API{
+    class KvaserControl<< (S, #AAAA00) Singleton>>
+    entity Frame<<Entity>>
+
+    KvaserControl "1" -l "1..*" Frame
+}
+
+package Internal{
+    class PortController<< (M, #FF7700) Module>>
+    class MessageSender<< (M, #FF7700) Module>>
+
+    PortController - MessageSender
+}
+
+KPortControlUI ---> PortController
+KPortControlUI "1" --o "1" KvaserControl
+SendMessageGenerator "0..N" -- "1" KvaserControl
+SendMessageGenerator --> PortController
+KvaserControl *-- PortController
+KvaserControl *-- MessageSender
+
+@enduml

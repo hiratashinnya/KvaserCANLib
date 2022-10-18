@@ -75,6 +75,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
@@ -111,12 +112,6 @@
     <Compile Include="Public\Frame.vb" />
     <Compile Include="Internal\IReceiver.vb" />
     <Compile Include="Public\ICommand.vb" />
-    <Compile Include="Public\KPortControlUI.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Public\KPortControlUI.Designer.vb">
-      <DependentUpon>KPortControlUI.vb</DependentUpon>
-    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -129,6 +124,18 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Public\KvaserControl.vb" />
+    <Compile Include="Public\UI\KPortControlUI.designer.vb">
+      <DependentUpon>KPortControlUI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Public\UI\KPortControlUI.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Public\UI\SendMessageGenerator.Designer.vb">
+      <DependentUpon>SendMessageGenerator.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Public\UI\SendMessageGenerator.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -137,8 +144,11 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Public\KPortControlUI.resx">
+    <EmbeddedResource Include="Public\UI\KPortControlUI.resx">
       <DependentUpon>KPortControlUI.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Public\UI\SendMessageGenerator.resx">
+      <DependentUpon>SendMessageGenerator.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
